@@ -28,7 +28,7 @@ exports.getAll = async (page, limit, order)=> {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        let sql = `SELECT * FROM quiz
+        let sql = `SELECT id, title, description, imageURL FROM quiz
         `;
         let data = await connection.query(sql);
         await connection.end();

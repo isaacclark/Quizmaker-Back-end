@@ -33,48 +33,48 @@ exports.createTables = async (id) => {
         await connection.query(sql);
 
         sql = `CREATE TABLE IF NOT EXISTS questions (
-            ID INT NOT NULL AUTO_INCREMENT,
+            id INT NOT NULL AUTO_INCREMENT,
             question VARCHAR(256),
             imageURL VARCHAR(2048),
             quizID INT, 
-            PRIMARY KEY (ID),
-            FOREIGN KEY (quizID) REFERENCES quiz(ID)
+            PRIMARY KEY (id),
+            FOREIGN KEY (quizID) REFERENCES quiz(id)
         )`;
         
         await connection.query(sql);
 
         sql = `CREATE TABLE IF NOT EXISTS answers (
-            ID INT NOT NULL AUTO_INCREMENT,
+            id INT NOT NULL AUTO_INCREMENT,
             answer VARCHAR(16),
             correct BOOLEAN,
             questionID INT, 
-            PRIMARY KEY (ID),
-            FOREIGN KEY (questionID) REFERENCES questions(ID)
+            PRIMARY KEY (id),
+            FOREIGN KEY (questionID) REFERENCES questions(id)
         )`;
 
         await connection.query(sql);
 
         sql = `CREATE TABLE IF NOT EXISTS test (
-            ID INT NOT NULL AUTO_INCREMENT,
+            id INT NOT NULL AUTO_INCREMENT,
             userID INT,
             quizID INT,
             created DATETIME DEFAULT CURRENT_TIMESTAMP,
             completed BOOLEAN,
             timeUsed TIME, 
             Score INT,
-            PRIMARY KEY (ID),
-            FOREIGN KEY (userID) REFERENCES users(ID),
-            FOREIGN KEY (quizID) REFERENCES quiz(ID)
+            PRIMARY KEY (id),
+            FOREIGN KEY (userID) REFERENCES users(id),
+            FOREIGN KEY (quizID) REFERENCES quiz(id)
         )`;
         
         await connection.query(sql);
 
         sql = `CREATE TABLE IF NOT EXISTS userAnswers(
-            ID INT NOT NULL AUTO_INCREMENT,
+            id INT NOT NULL AUTO_INCREMENT,
             answer VARCHAR(16),
             testID INT, 
-            PRIMARY KEY (ID),
-            FOREIGN KEY (testID) REFERENCES test(ID)
+            PRIMARY KEY (id),
+            FOREIGN KEY (testID) REFERENCES test(id)
         )`;
 
         await connection.query(sql);
@@ -111,7 +111,7 @@ exports.populateTables = async (id) => {
         sql = `INSERT INTO questions ( question , quizID)
         VALUES ('Who is the youngest clark child?', 1),
         ('What is the largest animal by mass?', 2), 
-        ('True or false? 70% of the world's population live in the northern hemisphere.', 2),
+        ("True or false? 70% of the world's population live in the northern hemisphere.", 2),
         ('What is the capital of japan?', 2),
         ('testy westy', 3),
         ('What is the capital of japan?',3),
@@ -138,8 +138,10 @@ exports.populateTables = async (id) => {
         ('Tokyo',6,TRUE),
         ('Kyoto',6,FALSE),
         ('Osaka',6,FALSE),
-        ('Pookie, 7, TRUE)
+        ('Pookie', 7, TRUE);
         `; 
+
+        await connection.query(sql);
 
         return {message:"created successfully"};
         

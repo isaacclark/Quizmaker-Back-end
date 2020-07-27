@@ -4,7 +4,7 @@ const conData = {
     host:"localhost",
     user:"root",
     password: "",
-    database: "myad"
+    database: "oktob"
 };
 
 exports.connect = function( callback){

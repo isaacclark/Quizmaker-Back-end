@@ -1,12 +1,27 @@
 var mysql = require('promise-mysql');
 var info = require('../config');
 
+exports.getAll = async (page, limit, order)=> {
+    try {
+        const connection = await mysql.createConnection(info.config);
+        //this is the sql statement to execute
+        let sql = `SELECT id, title, description, imageURL FROM quiz`;
+        let data = await connection.query(sql);
+        await connection.end();
+        return data;
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}
+
 exports.getById = async (id) => {
     try {
         //first connect to the database
         const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
-        let sql = `SELECT * FROM articles
+        //this is the sql statecment to execute
+        let sql = `SELECT * FROM quiz
                     WHERE ID = ${id}
                 `;
 
@@ -23,12 +38,27 @@ exports.getById = async (id) => {
         throw error;
     }
 }
-exports.getAnswers = async (page, limit, order)=> {
+
+exports.getQuestions = async (id)=> {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        let sql = `SELECT * FROM articles WHERE ID = ${id}
-        `;
+        let sql = `SELECT * FROM questions WHERE quizID = ${id}`;
+        let data = await connection.query(sql);
+        await connection.end();
+        return data;
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}
+
+exports.getAnswers = async (questionID)=> {
+    try {
+        const connection = await mysql.createConnection(info.config);
+        //this is the sql statement to execute
+        let sql = `SELECT * FROM answers WHERE questionID = ${questionID}`;
         let data = await connection.query(sql);
         await connection.end();
         return data;

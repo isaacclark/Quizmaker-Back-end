@@ -15,6 +15,6 @@ router.post('/create_db', async (ctx, next) => {
 router.post('/populate_db', async (ctx, next) => {
     let item = await model.populateTables(ctx.params.id);
     ctx.body = item;
-});
+});;
 
 module.exports = router; 

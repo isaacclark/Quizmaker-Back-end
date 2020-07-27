@@ -5,6 +5,7 @@ var special = require('./routes/welcome');
 var articles = require('./routes/articles'); 
 var admin = require ('./routes/admin');
 var users = require ('./routes/users');
+var quiz = require('./routes/quiz');
 
 //create a koa instance and store it in app variable
 var app = new Koa();
@@ -15,6 +16,7 @@ app.use(special.routes());
 app.use(articles.routes()); 
 app.use(admin.routes());
 app.use(users.routes());
+app.use(quiz.routes());
 
 var port = process.env.PORT || 3000; 
 

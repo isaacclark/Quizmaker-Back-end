@@ -79,6 +79,8 @@ exports.createTables = async (id) => {
 
         await connection.query(sql);
 
+        await connection.end();
+
         return {message:"created successfully"};
         
     } catch (error) {
@@ -142,6 +144,8 @@ exports.populateTables = async (id) => {
         `; 
 
         await connection.query(sql);
+
+        await connection.end();
 
         return {message:"created successfully"};
         

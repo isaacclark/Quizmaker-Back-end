@@ -73,8 +73,10 @@ exports.createTables = async (id) => {
             id INT NOT NULL AUTO_INCREMENT,
             answer VARCHAR(16),
             testID INT, 
+            questionID INT,
             PRIMARY KEY (id),
-            FOREIGN KEY (testID) REFERENCES test(id)
+            FOREIGN KEY (testID) REFERENCES test(id),
+            FOREIGN KEY (questionID) REFERENCES questions(id)
         )`;
 
         await connection.query(sql);

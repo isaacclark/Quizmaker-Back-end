@@ -13,7 +13,6 @@ router.get('/', async (cnx, next) => {
 });
 //attempt a specific quiz
 router.get('/:id', async (cnx, next) => {
-    console.log('response?')
     let id = cnx.params.id;
     data = await model.getById(id);
     if (data === null){
@@ -47,7 +46,6 @@ router.get('/:id/questions/:questionID', async (cnx, next) => {
 });
 //upload quiz details
 router.post('/quizBuild', bodyParser(), async (cnx, next) =>{
-    //console.log(cnx.request.body.newQuiz.title)
     let quiz = {
         title : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.title,
         description : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.description,
@@ -56,7 +54,6 @@ router.post('/quizBuild', bodyParser(), async (cnx, next) =>{
     }
 
     data = await model.addQuiz(quiz)
-    //console.log(data)
     if (data === null){
         cnx.body.response.status = 404;
         cnx.body = {message: "Error in attempting quiz"}
@@ -68,7 +65,7 @@ router.post('/quizBuild', bodyParser(), async (cnx, next) =>{
 
 //upload question details
 router.post('/quizBuild/question', bodyParser(), async (cnx, next) =>{
-    //console.log(cnx.request.body.newQuestion.question)
+
     let question = {
         question : cnx.request.body.newQuestion === undefined ? undefined: cnx.request.body.newQuestion.question,
         imageURL :  cnx.request.body.newQuestion === undefined ? undefined: cnx.request.body.newQuestion.imageURL,
@@ -76,7 +73,6 @@ router.post('/quizBuild/question', bodyParser(), async (cnx, next) =>{
     }
 
     data = await model.addQuestion(question)
-    //console.log(data)
     if (data === null){
         cnx.body.response.status = 404;
         cnx.body = {message: "Error in attempting quiz"}
@@ -90,7 +86,6 @@ router.post('/quizBuild/question', bodyParser(), async (cnx, next) =>{
 router.post('/quizBuild/answers', bodyParser(), async (cnx, next) =>{
    
     for (let i =0; i < cnx.request.body.newAnswers.length; i++){
-        console.log(cnx.request.body.newAnswers[i].questionID)
         let answer = {
             answer : cnx.request.body.newAnswers[i] === undefined ? undefined: cnx.request.body.newAnswers[i].answer,
             correct :  cnx.request.body.newAnswers[i] === undefined ? undefined: cnx.request.body.newAnswers[i].correct,
@@ -106,6 +101,67 @@ router.post('/quizBuild/answers', bodyParser(), async (cnx, next) =>{
         else{
             cnx.body = {message : "successfully uploaded quiz/questions/answers"}
         }
+    }
+})
+
+router.post('/', bodyParser(), async (cnx, next) =>{
+    let test = {
+        userID : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.userID,
+        quizID : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.quizID,
+        completed :  cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.completed,
+    }
+
+    data = await model.addTest(test)
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "Error in attempting quiz"}
+    }
+    else{
+        cnx.body = data;
+    }
+})
+//get last entered id for tests
+router.get('/newtestid', bodyParser(), async (cnx, next) =>{
+    data = await model.newtestid()
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "Error in attempting quiz"}
+    }
+    else{
+        cnx.body = data;
+    }
+})
+
+//upload quiz details
+router.get('/score/:id', bodyParser(), async (cnx, next) =>{
+    let id = cnx.params.id;
+    data = await model.grade(id)
+    
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "Error in attempting quiz"}
+    }
+    else{
+        cnx.body = data;
+    }
+})
+
+//upload question details
+router.post('/answers', bodyParser(), async (cnx, next) =>{
+    for (let i =0; i < cnx.request.body.userAnswersArray.length; i++){
+        let answer = {
+            answer : cnx.request.body.userAnswersArray[i] === undefined ? undefined: cnx.request.body.userAnswersArray[i].answer,
+            testID :  cnx.request.body.userAnswersArray[i] === undefined ? undefined: cnx.request.body.userAnswersArray[i].testID,
+            questionID : cnx.request.body.userAnswersArray[i] === undefined ? undefined: cnx.request.body.userAnswersArray[i].questionID
+        }
+        data = await model.addUserAnswer(answer)
+    }
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "Error in attempting quiz"}
+    }
+    else{
+        cnx.body = {message : "successfully uploaded quiz/questions/answers"}
     }
 })
 

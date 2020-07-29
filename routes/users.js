@@ -19,10 +19,11 @@ router.get('/:id([0-9]{1,})', async (cnx, next) => {
     cnx.body = data;
 });
 
-router.post('/', bodyParser(), async(cnx, next)=> {
-    console.log(cnx.request.body);
+router.post('/signup', bodyParser(), async(cnx, next)=> {
+    //console.log(cnx.request.body);
 
     let newUser = {
+        username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username,
         email : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.email,
         password : cnx.request.body.values === undefined ? undefined : cnx.request.body.values.password,
         passwordConfirmation : cnx.request.body.values === undefined ? undefined : cnx.request.body.values.passwordConfirmation
@@ -38,12 +39,20 @@ router.post('/', bodyParser(), async(cnx, next)=> {
     };
 });
 
-router.put('/:id([0-9]{1,})', async (cnx, next) =>{
-    //edit user
-})
+router.post('/login',bodyParser(),  async (cnx, next) =>{
+    let userInfo = {
+        email : cnx.request.body === undefined ? undefined: cnx.request.body.email,
+        password : cnx.request.body === undefined ? undefined : cnx.request.body.password,
+    };
 
-router.del('/:id([0-9]{1,})', async (cnx, next) =>{
-    //delete user
+    let data = await model.validate(userInfo)
+
+    if (data === null){
+        cnx.body.response.status = 404;
+    }
+    else{
+        cnx.body = data;
+    }
 });
 
 module.exports = router;

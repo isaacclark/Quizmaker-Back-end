@@ -68,80 +68,6 @@ exports.getAnswers = async (questionID)=> {
         throw error;
     }
 }
-exports.addQuiz = async (article) => {
-    try {
-        const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
-        let sql = `INSERT INTO quiz (title, description, imageURL, author)
-            VALUES ('${article.title}' , '${article.description}' , '${article.imageURL}' , '${article.author}')
-        `;
-        await connection.query(sql);
-        sql = `SELECT LAST_INSERT_ID()`
-        let data = await connection.query(sql);
-        await connection.end();
-        return data;
-
-    } catch (error) {
-        if(error.status === undefined)
-            error.status = 500;
-        throw error;
-    }
-}  
-
-exports.addQuestion = async (article) => {
-    try {
-        const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
-        let sql = `INSERT INTO questions (question, imageURL, quizID)
-            VALUES ('${article.question}' , '${article.imageURL}' , '${article.quizID}')
-        `;
-        await connection.query(sql);
-        sql = `SELECT LAST_INSERT_ID()`
-        let data = await connection.query(sql);
-        await connection.end();
-        return data;
-
-    } catch (error) {
-        if(error.status === undefined)
-            error.status = 500;
-        throw error;
-    }
-}  
-
-exports.addAnswer = async (article) => {
-    try {
-        const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
-        let sql = `INSERT INTO answers (answer, correct, questionID)
-            VALUES ('${article.answer}' , '${article.correct}' , '${article.questionID}')
-        `;
-        let data = await connection.query(sql);
-        await connection.end();
-        return data;
-
-    } catch (error) {
-        if(error.status === undefined)
-            error.status = 500;
-        throw error;
-    }
-}  
-
-exports.newtestID = async (article) => {
-    try {
-        const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
-        let sql = `select id from test ORDER BY id DESC LIMIT 1;
-        `;
-        let data = await connection.query(sql);
-        await connection.end();
-        return data;
-
-    } catch (error) {
-        if(error.status === undefined)
-            error.status = 500;
-        throw error;
-    }
-}  
 
 exports.addTest = async (article) => {
     try {
@@ -154,8 +80,8 @@ exports.addTest = async (article) => {
         sql = `SELECT LAST_INSERT_ID()`
         let data = await connection.query(sql);
         await connection.end();
+        //console.log(data)
         return data;
-
     } catch (error) {
         if(error.status === undefined)
             error.status = 500;
@@ -181,6 +107,29 @@ exports.addUserAnswer = async (article) => {
     }
 }  
 
+exports.getUserAnswers = async (quizID, userID) => {
+    try {
+        const connection = await mysql.createConnection(info.config);
+        //this is the sql statement to execute
+        let sql = `SELECT * from useranswers WHERE (questionID IN
+        (SELECT id FROM questions WHERE quizID = ${quizID})) AND 
+        testID IN (SELECT id FROM test WHERE userID = ${userID});
+        `;
+        let data = await connection.query(sql);
+        await connection.end();
+  
+        if (data === []){
+            data = null;
+        }
+        console.log(data);
+        return data;
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}  
+
 exports.grade = async (testID) => {
     try {
         const connection = await mysql.createConnection(info.config);
@@ -194,12 +143,17 @@ exports.grade = async (testID) => {
             (SELECT quizID FROM test WHERE id =  ${testID}))  ;
         `;
         let quizAnswers = await connection.query(sql);
-        await connection.end();
+     
         let counter = 0;
         for (let i = 0; i < userAnswers.length; i++){
             if(userAnswers[i].answer == quizAnswers[i].answer) counter++;
         }
-
+        sql = `UPDATE test 
+        SET score = ${counter} 
+        WHERE id = ${testID};
+        `;
+        let data = await connection.query(sql);
+        await connection.end();
         return counter;
 
     } catch (error) {
@@ -208,7 +162,7 @@ exports.grade = async (testID) => {
         throw error;
     }
 }  
-
+/*
 exports.addImage = function (conData, req, res, callback) {
     if (userID[1].user == null){
         console.log("you're not logged in")
@@ -240,4 +194,4 @@ exports.addImage = function (conData, req, res, callback) {
             });  
         });
     }
-};
+};*/

@@ -9,8 +9,7 @@ exports.createTables = async (id) => {
         let sql = `CREATE TABLE IF NOT EXISTS users (
             ID INT NOT NULL AUTO_INCREMENT,
             email VARCHAR(32),
-            forename VARCHAR(16),
-            surname VARCHAR(16),
+            username VARCHAR(16),
             pwd VARCHAR(256),
             pwdSalt VARCHAR(32),
             created DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -97,8 +96,8 @@ exports.populateTables = async (id) => {
         const connection = await mysql.createConnection(info.config);
 
         let sql = `INSERT INTO users 
-            (email, forename, surname, pwd, pwdSalt)
-            VALUES ('isaac@gmail.com', 'isaac', 'clark', 'password', 'salting') 
+            (email, username, pwd, pwdSalt)
+            VALUES ('isaac@gmail.com', 'isaac', 'password', 'salting') 
         `;
 
         await connection.query(sql);

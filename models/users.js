@@ -4,6 +4,7 @@ var mysql = require('promise-mysql');
 var bcrypt = require('bcryptjs');
 
 var info = require ('../config');
+const { addUserAnswer } = require('./quiz');
 
 exports.getById = async (id) =>{
     try{
@@ -60,16 +61,12 @@ exports.add = async (user) => {
         var salt =bcrypt.genSaltSync()
         var hash = bcrypt.hashSync(user.password, salt);
 
-        if (user.forename === undefined)
-            user.forename = null;
-        if (user.surname === undefined)
-            user.surname = null;
             
         let userData = {
             email: user.email,
+            username: user.username,
             pwd: hash,
-            forename: user.forename,
-            surname: user.surname,
+            pwdSalt: salt,
             created: new Date()
         }
 
@@ -86,4 +83,30 @@ exports.add = async (user) => {
         throw error;
     }
 
+}
+
+exports.validate = async (user) => {
+    try{
+        if (user.email === undefined){
+            throw {message: "Email is required", status:400}
+        }
+        if (user.password === undefined){
+            throw {message: "Password is required", status:400}
+        }
+        let userID = {id : null, username : null}
+        let sql = `SELECT username, pwdSalt, pwd, id FROM users WHERE email = '${user.email}'`
+        const connection = await mysql.createConnection(info.config);
+        let data = await connection.query(sql);
+        await connection.end()
+        if (bcrypt.hashSync(user.password, data[0].pwdSalt) == data[0].pwd){    
+            userID = { id : data[0].id, username : data[0].username}
+        }
+        console.log(userID);
+        return userID;
+    }
+    catch(error){
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
 }

@@ -13,7 +13,8 @@ router.post('/', bodyParser(), async (cnx, next) =>{
         title : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.title,
         description : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.description,
         imageURL :  cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.imageURL,
-        author : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.author
+        author : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.author,
+        time : cnx.request.body.newQuiz === undefined ? undefined: cnx.request.body.newQuiz.time
     }
 
     data = await model.addQuiz(quiz)

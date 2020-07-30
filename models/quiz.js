@@ -16,6 +16,22 @@ exports.getAll = async (page, limit, order)=> {
     }
 }
 
+exports.getAllByID = async (id)=> {
+    try {
+        const connection = await mysql.createConnection(info.config);
+        //this is the sql statement to execute
+        let sql = `SELECT id, title, description, imageURL FROM quiz WHERE quiz.id 
+        NOT IN( SELECT quizID FROM test WHERE userID = ${id})`;
+        let data = await connection.query(sql);
+        await connection.end();
+        return data;
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}
+
 exports.getById = async (id) => {
     try {
         //first connect to the database
@@ -72,16 +88,27 @@ exports.getAnswers = async (questionID)=> {
 exports.addTest = async (article) => {
     try {
         const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
-        let sql = `INSERT INTO test (userID, quizID, completed)
-            VALUES ('${article.userID}' , '${article.quizID}' , '${article.completed}')
-        `;
-        await connection.query(sql);
-        sql = `SELECT LAST_INSERT_ID()`
-        let data = await connection.query(sql);
+        let data = null;
+        let sql = `SELECT id FROM test WHERE userID = ${article.userID} AND quizID = ${article.quizID};`
+        let idExists = await connection.query(sql);
+        console.log(idExists)
+        if(idExists.length > 0){
+            sql = `UPDATE test SET completed = ${article.completed}, time = '${article.time}'
+            WHERE id = ${idExists[0].id}`
+            await connection.query(sql);
+            data = idExists[0].id
+        }
+        else{
+            sql = `INSERT INTO test (userID, quizID, completed, time)
+            VALUES ('${article.userID}' , '${article.quizID}' , '${article.completed}','${article.time}')
+            `;
+            await connection.query(sql);
+            sql = `SELECT LAST_INSERT_ID()`
+            data = await connection.query(sql);
+        }
         await connection.end();
-        //console.log(data)
         return data;
+
     } catch (error) {
         if(error.status === undefined)
             error.status = 500;
@@ -93,11 +120,23 @@ exports.addUserAnswer = async (article) => {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        let sql = `INSERT INTO useranswers (answer, testID, questionID)
+        let sql = `SELECT id FROM useranswers WHERE testID = ${article.testID} AND questionID = ${article.questionID};`
+        let idExists = await connection.query(sql);
+        if(idExists.length > 0){
+            sql = `Update useranswers SET answer = ${article.answer}
+            WHERE id = ${idExists[0].id}`
+            await connection.query(sql);
+            data = idExists[0].id
+        }
+        else{
+            sql = `INSERT INTO useranswers (answer, testID, questionID)
             VALUES ('${article.answer}' , '${article.testID}' , '${article.questionID}')
         `;
-        let data = await connection.query(sql);
+            await connection.query(sql);
+        }
         await connection.end();
+
+        let data = {message : "set useranswer!"}
         return data;
 
     } catch (error) {
@@ -121,7 +160,26 @@ exports.getUserAnswers = async (quizID, userID) => {
         if (data === []){
             data = null;
         }
-        console.log(data);
+        return data;
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}  
+
+exports.getTestTime = async (quizID, userID) => {
+    try {
+        const connection = await mysql.createConnection(info.config);
+        //this is the sql statement to execute
+        let sql = `SELECT time FROM test WHERE quizID = ${quizID} AND userID = ${userID};
+        `;
+        let data = await connection.query(sql);
+        await connection.end();
+  
+        if (data === []){
+            data = null;
+        }
         return data;
     } catch (error) {
         if(error.status === undefined)
@@ -134,7 +192,6 @@ exports.grade = async (testID) => {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        //console.log(article)
         let sql = `SELECT answer FROM useranswers WHERE( testID = ${testID})
         `;
         let userAnswers = await connection.query(sql);

@@ -5,9 +5,31 @@ var router = Router({
     prefix: '/api/v1.0/history'
 });
 
-router.get('/:id', async (cnx, next) => {
+router.get('/closed/:id', async (cnx, next) => {
     let id = cnx.params.id;
-    data = await model.getAll(id);
+    data = await model.getAllClosed(id);
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "article no foundy"}
+    }
+    else
+        cnx.body = data;
+});
+
+router.get('/open/:id', async (cnx, next) => {
+    let id = cnx.params.id;
+    data = await model.getAllOpen(id);
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "article no foundy"}
+    }
+    else
+        cnx.body = data;
+});
+
+router.get('/openquiz/:id', async (cnx, next) => {
+    let id = cnx.params.id;
+    data = await model.getOpenQuiz(id);
     if (data === null){
         cnx.body.response.status = 404;
         cnx.body = {message: "article no foundy"}

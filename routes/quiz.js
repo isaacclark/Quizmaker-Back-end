@@ -7,9 +7,19 @@ var router = Router({
 });
 
 //browse all quizzes
-router.get('/', async (cnx, next) => {
-    let id =cnx.params.id;
-    data = await model.getAll(id);;
+router.get('/browse', async (cnx, next) => {
+    data = await model.getAll();;
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "article no foundy"}
+    }
+    else
+        cnx.body = data;
+});
+
+router.get('/browse/:id', async (cnx, next) => {
+    let id = cnx.params.id;
+    data = await model.getAllByID(id);;
     if (data === null){
         cnx.body.response.status = 404;
         cnx.body = {message: "article no foundy"}
@@ -59,6 +69,7 @@ router.post('/', bodyParser(), async (cnx, next) =>{
         userID : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.userID,
         quizID : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.quizID,
         completed :  cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.completed,
+        time : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.time
     }
 
     data = await model.addTest(test)
@@ -73,9 +84,7 @@ router.post('/', bodyParser(), async (cnx, next) =>{
 
 //upload question details
 router.post('/answers', bodyParser(), async (cnx, next) =>{
-    console.log(cnx.request.body.userAnswersArray)
-    for (let i =0; i < cnx.request.body.userAnswersArray.length; i++){
-        //console.log(cnx.request.body.userAnswersArray)
+    for (let i =1; i < cnx.request.body.userAnswersArray.length; i++){
         let answer = {
             answer : cnx.request.body.userAnswersArray[i] === undefined ? undefined: cnx.request.body.userAnswersArray[i].answer,
             testID :  cnx.request.body.userAnswersArray[i] === undefined ? undefined: cnx.request.body.userAnswersArray[i].testID,
@@ -119,6 +128,22 @@ router.get('/savetest/:id/:userid', bodyParser(), async (cnx, next) =>{
         cnx.body = data;
     }
 })
+
+router.get('/getTest/:id/:userid', bodyParser(), async (cnx, next) =>{
+    let quizID= cnx.params.id;
+    let userID = cnx.params.userid;
+    data = await model.getTestTime(quizID, userID)
+    console.log("below is data for testtime")
+    console.log(data)
+    if (data === null){
+        cnx.body.response.status = 404;
+        cnx.body = {message: "Error in attempting quiz"}
+    }
+    else{
+        cnx.body = data;
+    }
+})
+
 /*
 router.put('/:id', bodyParser(), async (cnx, next) => {
     let newArticle = {title:cnx.request.body.title, fullText:cnx.request.body.fullText}

@@ -101,7 +101,6 @@ exports.validate = async (user) => {
         if (bcrypt.hashSync(user.password, data[0].pwdSalt) == data[0].pwd){    
             userID = { id : data[0].id, username : data[0].username}
         }
-        console.log(userID);
         return userID;
     }
     catch(error){

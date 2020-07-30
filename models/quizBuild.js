@@ -5,8 +5,8 @@ exports.addQuiz = async (article) => {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        let sql = `INSERT INTO quiz (title, description, imageURL, author)
-            VALUES ('${article.title}' , '${article.description}' , '${article.imageURL}' , '${article.author}')
+        let sql = `INSERT INTO quiz (title, description, imageURL, author, time)
+            VALUES ('${article.title}' , '${article.description}' , '${article.imageURL}' , '${article.author}', '${article.time}')
         `;
         await connection.query(sql);
         sql = `SELECT LAST_INSERT_ID()`

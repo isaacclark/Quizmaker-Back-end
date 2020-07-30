@@ -25,7 +25,7 @@ exports.createTables = async (id) => {
             imageURL VARCHAR(2048),
             author VARCHAR(32),
             created DATETIME DEFAULT CURRENT_TIMESTAMP,
-            length TIME, 
+            time TIME, 
             PRIMARY KEY (ID)
         )`;
 
@@ -59,7 +59,7 @@ exports.createTables = async (id) => {
             quizID INT,
             created DATETIME DEFAULT CURRENT_TIMESTAMP,
             completed BOOLEAN,
-            timeUsed TIME, 
+            time TIME, 
             Score INT,
             PRIMARY KEY (id),
             FOREIGN KEY (userID) REFERENCES users(id),
@@ -103,7 +103,7 @@ exports.populateTables = async (id) => {
         await connection.query(sql);
 
         sql = `INSERT INTO quiz
-            (title, description, author, length)
+            (title, description, author, time)
             VALUES ('Inquizition', 'test quiz for the fam', 'isaac clark', '00:20:00' ),
             ('chicken','chicken description','Heather Smith', '00:20:00'),
             ('dog','dog description','Tim Clark', '00:20:00'); 

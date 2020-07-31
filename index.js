@@ -20,7 +20,7 @@ app.use(history.routes());
 app.use(quizBuild.routes());
 
 
-var port = 3006 || 3000; 
+var port = process.env.PORT || 3000; 
 
 app.listen(port, function(){
     

@@ -7,7 +7,8 @@ var router = Router({
 
 var bodyParser = require('koa-bodyparser');
 
-router.get('/:id([0-9]{1,})', async (cnx, next) => {
+router.get('/:id)', async (cnx, next) => {
+    cnx.body = {message: "getting user by id"}
     let id= cnx.params.id
     let data = await model.getById(id);
 
@@ -17,11 +18,12 @@ router.get('/:id([0-9]{1,})', async (cnx, next) => {
     }
     else
     cnx.body = data;
+    
 });
 
 router.post('/signup', bodyParser(), async(cnx, next)=> {
     //console.log(cnx.request.body);
-
+    cnx.body = {message: "Signing user up"}
     let newUser = {
         username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username,
         email : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.email,

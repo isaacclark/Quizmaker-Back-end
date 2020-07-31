@@ -4,7 +4,7 @@ var    router = Router({
 });
 
 router.get('/', (cnx, next) => {
-    cnx.body = {message:'Welcome to Oktob API    version 1.0'};
+    cnx.body = {message:'Welcome screen'};
 });
 
 module.exports = router;

@@ -8,6 +8,7 @@ var router = Router({
 
 //browse all quizzes
 router.get('/browse', async (cnx, next) => {
+    cnx.body = {message: "Browseing"}
     data = await model.getAll();;
     if (data === null){
         cnx.body.response.status = 404;

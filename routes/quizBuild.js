@@ -3,7 +3,7 @@ var model = require('../models/quizBuild');
 var bodyParser = require('koa-bodyparser');
 
 var router = Router({
-    prefix: '/api/v1.0/quizBuild'
+    prefix: '/quizBuild'
 });
 
 

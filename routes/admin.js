@@ -2,7 +2,7 @@ var Router = require('koa-router');
 var model = require('../models/admin');
 
 var router = Router({
-    prefix: '/api/v1.0/admin'
+    prefix: '/admin'
 });
 //because we are going to parse POST parameters we will import koa-bodyparser
 var bodyParser = require('koa-bodyparser');

@@ -2,7 +2,7 @@ var Router = require ('koa-router');
 var model = require('../models/users');
 
 var router = Router({
-    prefix: '/api/v1.0/users'
+    prefix: '/users'
 });
 
 var bodyParser = require('koa-bodyparser');

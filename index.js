@@ -24,5 +24,5 @@ app.use(quizBuild.routes());
 
 
 var port = process.env.PORT || 3000; 
-
+console.log('listening...')
 app.listen(port); 

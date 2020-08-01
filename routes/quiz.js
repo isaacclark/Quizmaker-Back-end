@@ -20,7 +20,7 @@ router.get('/browse', async (cnx, next) => {
 
 router.get('/browse/:id', async (cnx, next) => {
     let id = cnx.params.id;
-    data = await model.getAllByID(id);;
+    data = await model.getAllByID(id);
     if (data === null){
         cnx.body.response.status = 404;
         cnx.body = {message: "article no foundy"}

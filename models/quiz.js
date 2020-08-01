@@ -23,6 +23,8 @@ exports.getAllByID = async (id)=> {
         let sql = `SELECT id, title, description, imageURL FROM quiz WHERE quiz.id 
         NOT IN( SELECT quizID FROM test WHERE userID = ${id})`;
         let data = await connection.query(sql);
+        console.log("this the browse data")
+        console.log(data)
         await connection.end();
         return data;
     } catch (error) {

@@ -27,6 +27,8 @@ exports.getById = async (id) =>{
 
 exports.add = async (user) => {
     try{
+        console.log('signup user')
+        console.log(user)
         if (user.email === undefined){
             throw {message: "Email is required", status:400}
         }
@@ -87,6 +89,8 @@ exports.add = async (user) => {
 
 exports.validate = async (user) => {
     try{
+        console.log(user)
+        console.log("that was user")
         if (user.email === undefined){
             throw {message: "Email is required", status:400}
         }
@@ -97,6 +101,8 @@ exports.validate = async (user) => {
         let sql = `SELECT username, pwdSalt, pwd, id FROM users WHERE email = '${user.email}'`
         const connection = await mysql.createConnection(info.config);
         let data = await connection.query(sql);
+        console.log(data)
+        console.log('that was username pwdsalt, pwd. id')
         await connection.end()
         if (bcrypt.hashSync(user.password, data[0].pwdSalt) == data[0].pwd){    
             userID = { id : data[0].id, username : data[0].username}

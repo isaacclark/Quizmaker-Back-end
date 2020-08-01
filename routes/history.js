@@ -2,7 +2,7 @@ var Router = require('koa-router');
 var model = require('../models/history');
 
 var router = Router({
-    prefix: '/api/v1.0/history'
+    prefix: '/history'
 });
 
 router.get('/closed/:id', async (cnx, next) => {

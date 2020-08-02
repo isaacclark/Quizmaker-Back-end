@@ -15,6 +15,9 @@ exports.getAllClosed = async (id)=> {
             //Select info about the quiz the test was taken from
             sql = `SELECT title, description, imageURL from quiz WHERE id = ${data[i].quizID};`
             test = await connection.query(sql)
+            //get author name
+            sql = `Select username from users WHERE id IN (SELECT author FROM quiz WHERE id = ${data[i].quizID})`
+            quizAuthor =  await connection.query(sql)
             //Select id's of all questions from quiz to get number of questions
             sql = `SELECT id from questions WHERE quizID = ${data[i].quizID}`
             questionIDs = await connection.query(sql)
@@ -30,7 +33,8 @@ exports.getAllClosed = async (id)=> {
                 title : test[0].title,
                 description : test[0].description,
                 imageURL : test[0].imageURL,
-                score : stringScore + " / " + (questionIDs.length).toString()
+                score : stringScore + " / " + (questionIDs.length).toString(),
+                author : quizAuthor[0].username
             }
             quizzes.push(tobepushed)        
         }
@@ -67,10 +71,12 @@ exports.getAllOpen = async (id)=> {
         let time = ""
         let quizzes = []
         for(let i =0; i < data.length; i++){
-            console.log(data[i].time)
             //Select info about the quiz the test was taken from
             sql = `SELECT title, description, imageURL from quiz WHERE id = ${data[i].quizID};`
             test = await connection.query(sql)
+            //get author name
+            sql = `Select username from users WHERE id IN (SELECT author FROM quiz WHERE id = ${data[i].quizID})`
+            quizAuthor =  await connection.query(sql)
             //Select id's of all questions from quiz to get number of questions
             sql = `SELECT id from questions WHERE quizID = ${data[i].quizID}`
             questionIDs = await connection.query(sql)
@@ -80,7 +86,8 @@ exports.getAllOpen = async (id)=> {
                 title : test[0].title,
                 description : test[0].description,
                 imageURL : test[0].imageURL,
-                time : data[i].time
+                time : data[i].time,
+                author : quizAuthor[0].username
             }
             quizzes.push(tobepushed)        
         }

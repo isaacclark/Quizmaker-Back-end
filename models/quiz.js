@@ -5,8 +5,13 @@ exports.getAll = async (page, limit, order)=> {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        let sql = `SELECT id, title, description, imageURL FROM quiz`;
+        let sql = `SELECT id, title, description, imageURL, author FROM quiz`;
         let data = await connection.query(sql);
+        for(let i =0; i < data.length; i++){
+            sql = `Select username FROM users WHERE id = ${data[i].author}`
+            let author = await connection.query(sql);
+            data[i].author = author[0].username
+        }
         await connection.end();
         return data;
     } catch (error) {
@@ -20,11 +25,14 @@ exports.getAllByID = async (id)=> {
     try {
         const connection = await mysql.createConnection(info.config);
         //this is the sql statement to execute
-        let sql = `SELECT id, title, description, imageURL FROM quiz WHERE quiz.id 
+        let sql = `SELECT id, title, description, imageURL, author FROM quiz WHERE quiz.id 
         NOT IN( SELECT quizID FROM test WHERE userID = ${id})`;
         let data = await connection.query(sql);
-        console.log("this the browse data")
-        console.log(data)
+        for(let i =0; i < data.length; i++){
+            sql = `Select username FROM users WHERE id = ${data[i].author}`
+            let author = await connection.query(sql);
+            data[i].author = author[0].username
+        }
         await connection.end();
         return data;
     } catch (error) {

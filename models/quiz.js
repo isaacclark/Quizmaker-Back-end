@@ -219,12 +219,12 @@ exports.grade = async (testID) => {
     try {
         const connection = await mysql.createConnection(info.config);
         //get all the user's answers from a specific test
-        let sql = `SELECT answer FROM useranswers WHERE( testID = ${testID})
+        let sql = `SELECT answer, questionID FROM useranswers WHERE( testID = ${testID})
         `;
         let userAnswers = await connection.query(sql);
         //select the correct answers from answers where the questionID is the same as the id in questions where the quizID is the same id in quiz where the id is the same as the quizID in test
         //where the id is equal to the parameter testID
-        sql = `SELECT answer FROM answers WHERE correct = 1 AND answers.questionID IN 
+        sql = `SELECT answer, questionID FROM answers WHERE correct = 1 AND answers.questionID IN 
             (SELECT id FROM questions WHERE questions.quizID IN 
             (SELECT quizID FROM test WHERE id =  ${testID}))  ;
         `;
@@ -232,7 +232,11 @@ exports.grade = async (testID) => {
         //compare the user's answers to the correct answer, if correct +1 to the var counter        
         let counter = 0;
         for (let i = 0; i < userAnswers.length; i++){
-            if(userAnswers[i].answer == quizAnswers[i].answer) counter++;
+            for(let j =0; i < quizAnswers.length; j++){
+                if(userAnswers[i].questionID === quizAnswers[j].questionID){
+                    if(userAnswers[i].answer === quizAnswers[j].answer) counter++;
+                }
+            }
         }
         //update the score in test
         sql = `UPDATE test 

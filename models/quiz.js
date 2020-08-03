@@ -238,6 +238,7 @@ exports.grade = async (testID) => {
                 }
             }
         }
+        console.log(counter)
         //update the score in test
         sql = `UPDATE test 
         SET score = ${counter} 

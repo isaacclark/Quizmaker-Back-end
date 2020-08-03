@@ -229,6 +229,8 @@ exports.grade = async (testID) => {
             (SELECT quizID FROM test WHERE id =  ${testID}))  ;
         `;
         let quizAnswers = await connection.query(sql);
+        console.log(userAnswers)
+        console.log(quizAnswers)
         //compare the user's answers to the correct answer, if correct +1 to the var counter        
         let counter = 0;
         for (let i = 0; i < userAnswers.length; i++){

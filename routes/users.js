@@ -7,6 +7,7 @@ var router = Router({
 
 var bodyParser = require('koa-bodyparser');
 
+//get user from the id supplied
 router.get('/:id)', async (cnx, next) => {
     cnx.body = {message: "getting user by id"}
     let id= cnx.params.id
@@ -21,8 +22,9 @@ router.get('/:id)', async (cnx, next) => {
     
 });
 
+//convert the cnx body data into a simple object which is then passed to the models
+//cretaing a new user
 router.post('/signup', bodyParser(), async(cnx, next)=> {
-    //console.log(cnx.request.body);
     cnx.body = {message: "Signing user up"}
     let newUser = {
         username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username,
@@ -41,6 +43,7 @@ router.post('/signup', bodyParser(), async(cnx, next)=> {
     };
 });
 
+//verifiying a login 
 router.post('/login',bodyParser(),  async (cnx, next) =>{
     let userInfo = {
         email : cnx.request.body === undefined ? undefined: cnx.request.body.email,

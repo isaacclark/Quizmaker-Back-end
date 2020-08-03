@@ -7,8 +7,8 @@ const conData = {
     database: "q74d7po7a3xyem92"
 };
 
+//connection needs to be established before any actions can be perforned on the db
 exports.connect = function( callback){
-
     var con = mysql.createConnection({
         host: conData.host,
         user: conData.user,

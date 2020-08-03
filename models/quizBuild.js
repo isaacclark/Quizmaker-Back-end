@@ -1,10 +1,11 @@
 var mysql = require('promise-mysql');
 var info = require('../config');
 
+//add a new quiz 
 exports.addQuiz = async (article) => {
     try {
         const connection = await mysql.createConnection(info.config);
-        //this is the sql statement to execute
+        //insert the data posted
         let sql = `INSERT INTO quiz (title, description, imageURL, author, time)
             VALUES ('${article.title}' , '${article.description}' , '${article.imageURL}' , '${article.author}', '${article.time}')
         `;
@@ -12,6 +13,7 @@ exports.addQuiz = async (article) => {
         sql = `SELECT LAST_INSERT_ID()`
         let data = await connection.query(sql);
         await connection.end();
+        //return the id of the newly created quiz
         return data;
 
     } catch (error) {
@@ -21,6 +23,7 @@ exports.addQuiz = async (article) => {
     }
 }  
 
+//add questions to the newly created quiz
 exports.addQuestion = async (article) => {
     try {
         const connection = await mysql.createConnection(info.config);
@@ -41,6 +44,7 @@ exports.addQuestion = async (article) => {
     }
 }  
 
+//add user answers
 exports.addAnswer = async (article) => {
     try {
         const connection = await mysql.createConnection(info.config);

@@ -18,6 +18,7 @@ router.get('/browse', async (cnx, next) => {
         cnx.body = data;
 });
 
+//browse all quizzes that haven't been attempted by the user with the supplied id
 router.get('/browse/:id', async (cnx, next) => {
     let id = cnx.params.id;
     data = await model.getAllByID(id);
@@ -65,7 +66,9 @@ router.get('/:id/questions/:questionID', async (cnx, next) => {
         cnx.body = data;
 });
 
+//add a new test after submitting
 router.post('/', bodyParser(), async (cnx, next) =>{
+    //values passed in json through the cnx body
     let test = {
         userID : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.userID,
         quizID : cnx.request.body.newTest === undefined ? undefined: cnx.request.body.newTest.quizID,
@@ -117,6 +120,7 @@ router.get('/score/:id', bodyParser(), async (cnx, next) =>{
     }
 })
 
+//get the user answers using the supplied quizID and testID
 router.get('/savetest/:id/:userid', bodyParser(), async (cnx, next) =>{
     let quizID= cnx.params.id;
     let userID = cnx.params.userid;
@@ -130,12 +134,11 @@ router.get('/savetest/:id/:userid', bodyParser(), async (cnx, next) =>{
     }
 })
 
+//get the time remaining for an open quiz identified by the quiz id and user id
 router.get('/getTest/:id/:userid', bodyParser(), async (cnx, next) =>{
     let quizID= cnx.params.id;
     let userID = cnx.params.userid;
     data = await model.getTestTime(quizID, userID)
-    console.log("below is data for testtime")
-    console.log(data)
     if (data === null){
         cnx.body.response.status = 404;
         cnx.body = {message: "Error in attempting quiz"}
@@ -144,14 +147,5 @@ router.get('/getTest/:id/:userid', bodyParser(), async (cnx, next) =>{
         cnx.body = data;
     }
 })
-
-/*
-router.put('/:id', bodyParser(), async (cnx, next) => {
-    let newArticle = {title:cnx.request.body.title, fullText:cnx.request.body.fullText}
-    let id =cnx.params.id;
-    await model.update(newArticle);
-    cnx.body = {message:"updated successfully"};
-});;
-*/
 
 module.exports = router; 

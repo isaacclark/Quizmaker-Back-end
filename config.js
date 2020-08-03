@@ -1,4 +1,4 @@
-//use the value stored in the environment otherwise use the default one
+//use the db attached with these configurations
 exports.config = {
     host: process.env.DB_HOST || "fojvtycq53b2f2kx.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
     port: process.env.DB_PORT || 3306,

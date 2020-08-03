@@ -14,14 +14,12 @@ var history = require('./routes/history');
 var app = new Koa();
 
 app.use(cors());
-
 app.use(welcome.routes());
 app.use(admin.routes());
 app.use(users.routes());
 app.use(quiz.routes());
 app.use(history.routes());
 app.use(quizBuild.routes());
-
 
 var port = process.env.PORT || 3000; 
 

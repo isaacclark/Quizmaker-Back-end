@@ -1,7 +1,7 @@
 var mysql = require('promise-mysql');
 var info = require('../config');
 
-
+//used to create the tables originally when building
 exports.createTables = async (id) => {
     try{
         const connection = await mysql.createConnection(info.config);
@@ -89,69 +89,4 @@ exports.createTables = async (id) => {
         ctx.throw(500, 'An Error has occured');
     }
         
-}
-
-exports.populateTables = async (id) => {
-    try{
-        const connection = await mysql.createConnection(info.config);
-
-        let sql = `INSERT INTO users 
-            (email, username, pwd, pwdSalt)
-            VALUES ('isaac@gmail.com', 'isaac', 'password', 'salting') 
-        `;
-
-        await connection.query(sql);
-
-        sql = `INSERT INTO quiz
-            (title, description, author, time)
-            VALUES ('Inquizition', 'test quiz for the fam', 'isaac clark', '00:20:00' ),
-            ('chicken','chicken description','Heather Smith', '00:20:00'),
-            ('dog','dog description','Tim Clark', '00:20:00'); 
-        `; 
-
-        await connection.query(sql);
-
-        sql = `INSERT INTO questions ( question , quizID)
-        VALUES ('Who is the youngest clark child?', 1),
-        ('What is the largest animal by mass?', 2), 
-        ("True or false? 70% of the world's population live in the northern hemisphere.", 2),
-        ('What is the capital of japan?', 2),
-        ('testy westy', 3),
-        ('What is the capital of japan?',3),
-        ('what is the cats name?', 1);
-        `; 
-
-        await connection.query(sql);
-
-
-        sql = `INSERT INTO answers
-        (answer, questionID, correct)
-        VALUES ('Oscar', 1, TRUE),
-        ('Isaac', 1, FALSE),
-        ('Faith', 1, FALSE),
-        ('Pookie', 1, FALSE),
-        ('Elephant',2,FALSE),
-        ('Blue whale',2,TRUE),
-        ('True',3,FALSE),
-        ('False',3,TRUE),
-        ('Tokyo',4,TRUE),
-        ('Kyoto',4,FALSE),
-        ('Osaka',4,FALSE),
-        ('RESPONDY WONDY',5,FALSE),
-        ('Tokyo',6,TRUE),
-        ('Kyoto',6,FALSE),
-        ('Osaka',6,FALSE),
-        ('Pookie', 7, TRUE);
-        `; 
-
-        await connection.query(sql);
-
-        await connection.end();
-
-        return {message:"created successfully"};
-        
-        } catch (error) {
-            console.log(error);
-            ctx.throw(500, 'An Error has occured');
-    }
 }
